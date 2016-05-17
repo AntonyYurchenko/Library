@@ -8,15 +8,18 @@ AddBookDialog::AddBookDialog(QWidget *parent) :
     QDialog(parent),
     _ui(new Ui::AddBookDialog)
 {
-    _ui->setupUi(this);
-    _ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    Init();
+}
 
-    connect(_ui->nameEdit, SIGNAL(textChanged(QString)),
-        this, SLOT(ValidateOkBtn()));
-    connect(_ui->authorEdit, SIGNAL(textChanged(QString)),
-        this, SLOT(ValidateOkBtn()));
-    connect(_ui->dateEdit, SIGNAL(textChanged(QString)),
-        this, SLOT(ValidateOkBtn()));
+AddBookDialog::AddBookDialog(QList<QString> list, QWidget *parent) :
+    QDialog(parent),
+    _ui(new Ui::AddBookDialog)
+{
+    Init();
+
+    _ui->nameEdit->setText(list.at(0));
+    _ui->authorEdit->setText(list.at(1));
+    _ui->dateEdit->setText(list.at(2));
 }
 
 AddBookDialog::~AddBookDialog()
@@ -32,6 +35,19 @@ QList<QString> AddBookDialog::GetData()
          << _ui->dateEdit->text();
 
     return list;
+}
+
+void AddBookDialog::Init()
+{
+    _ui->setupUi(this);
+    _ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+    connect(_ui->nameEdit, SIGNAL(textChanged(QString)),
+        this, SLOT(ValidateOkBtn()));
+    connect(_ui->authorEdit, SIGNAL(textChanged(QString)),
+        this, SLOT(ValidateOkBtn()));
+    connect(_ui->dateEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(ValidateOkBtn()));
 }
 
 void AddBookDialog::ValidateOkBtn()

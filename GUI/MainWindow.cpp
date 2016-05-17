@@ -54,7 +54,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::PrepareTable(QTableView *table)
 {
-    table->verticalHeader()->setVisible(false);
+    table->verticalHeader()->setVisible(table == _ui->booksTable);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
     table->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -140,7 +140,19 @@ void MainWindow::on_addBookBtn_clicked()
 
 void MainWindow::on_changeBookBtn_clicked()
 {
+    QList<QString> list;
+    list << _booksModel->item(_ui->booksTable->currentIndex().row(), 0)->text()
+         << _booksModel->item(_ui->booksTable->currentIndex().row(), 1)->text()
+         << _booksModel->item(_ui->booksTable->currentIndex().row(), 2)->text();
 
+    AddBookDialog *addBookDialog = new AddBookDialog(list, this);
+
+   if (addBookDialog->exec() == QDialog::Accepted)
+   {
+        _booksModel->item(_ui->booksTable->currentIndex().row(), 0)->setText(addBookDialog->GetData().at(0));
+        _booksModel->item(_ui->booksTable->currentIndex().row(), 1)->setText(addBookDialog->GetData().at(1));
+        _booksModel->item(_ui->booksTable->currentIndex().row(), 2)->setText(addBookDialog->GetData().at(2));
+   }
 }
 
 void MainWindow::on_deleteBookBtn_clicked()

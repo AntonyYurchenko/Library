@@ -29,18 +29,23 @@ void BooksModel::DeleteBook(const int index)
 
 void BooksModel::DeleteBooksByStudentId(const QString id)
 {
-    QModelIndexList list = match(item(0,0)->index(), Qt::UserRole + 1, id);
-    qDebug() << "count: " << list.count();
+    int count = 0;
 
-    for (int i = 0; i< list.count(); ++i) {
+    for(int j = 0; j < rowCount(); j++)
+        if (item(j, 0)->data().toString() == id)
+            count++;
+
+    qDebug() << "count: " << count;
+
+    for (int i = 0; i < count; ++i) {
         for(int j = 0; j < rowCount(); j++)
         {
             if (item(j, 0)->data().toString() == id)
             {
-                removeRow(j);
                 qDebug() << item(j,0)->text();
+                removeRow(j);
+                break;
             }
-            break;
         }
     }
 }

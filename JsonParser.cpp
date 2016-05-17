@@ -11,7 +11,6 @@ bool JsonParser::load(QString fileName, QStandardItemModel *model) {
     QJsonDocument loadDoc = QJsonDocument::fromJson(saveData);
     QJsonObject json = loadDoc.object();
 
-    // Очистка модели
     while (model->rowCount() > 0) {
         model->invisibleRootItem()->removeRow(0);
     }
