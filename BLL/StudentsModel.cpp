@@ -1,7 +1,6 @@
 #include "StudentsModel.h"
 
 #include <QUuid>
-#include <QDebug>
 
 StudentsModel::StudentsModel(QObject *parent) :
     QStandardItemModel(parent)

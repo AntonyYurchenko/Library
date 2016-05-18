@@ -37,6 +37,7 @@ private slots:
 
     void OnStudentModelChanged();
     void OnBookModelChanged();
+    void OnMenuClicked(QAction*action);
 
 private:
     Ui::MainWindow *_ui;

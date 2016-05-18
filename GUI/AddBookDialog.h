@@ -25,6 +25,10 @@ private:
 private slots:
     void ValidateOkBtn();
 
+    void on_calendarWidget_clicked(const QDate &date);
+
+    void on_dateEdit_dateChanged(const QDate &date);
+
 private:
     Ui::AddBookDialog *_ui;
 

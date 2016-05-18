@@ -1,11 +1,12 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
-#include <QDebug>
+#include <QMessageBox>
 
 #include "AddStudentDialog.h"
 #include "AddBookDialog.h"
 #include "JsonParser.h"
+#include <QDate>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +31,8 @@ MainWindow::MainWindow(QWidget *parent) :
     JsonParser::load("students.txt", _studentsModel);
     JsonParser::load("books.txt", _booksModel);
 
+    CheckBooks();
+
     _proxyModel = new ProxyModel(this);
 
     _proxyModel->setSourceModel(_booksModel);
@@ -42,6 +45,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(_booksModel, SIGNAL(ModelChanged()),
             this, SLOT(OnBookModelChanged()));
+
+    connect(_ui->menuFile, SIGNAL(triggered(QAction*)),
+            this, SLOT(OnMenuClicked(QAction*)));
+    connect(_ui->menuEdit, SIGNAL(triggered(QAction*)),
+            this, SLOT(OnMenuClicked(QAction*)));
+    connect(_ui->menuHelp, SIGNAL(triggered(QAction*)),
+            this, SLOT(OnMenuClicked(QAction*)));
+    connect(_ui->menuAbout, SIGNAL(triggered(QAction*)),
+            this, SLOT(OnMenuClicked(QAction*)));
 }
 
 MainWindow::~MainWindow()
@@ -60,6 +72,58 @@ void MainWindow::PrepareTable(QTableView *table)
     table->setSelectionMode(QAbstractItemView::SingleSelection);
     table->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     table->horizontalHeader()->setStretchLastSection(true);
+}
+
+void MainWindow::CheckBooks()
+{
+    QList<QString> ids;
+
+    for (int i = 0; i < _booksModel->rowCount(); i++)
+        if (QDate::fromString(_booksModel->item(i,2)->text(), "dd.MM.yyyy") <
+            QDate::currentDate() && _booksModel->item(i,3)->text() != tr("Returned"))
+        {
+            _booksModel->item(i,0)->setBackground(QBrush(QColor(255,100,100)));
+            _booksModel->item(i,1)->setBackground(QBrush(QColor(255,100,100)));
+            _booksModel->item(i,2)->setBackground(QBrush(QColor(255,100,100)));
+            _booksModel->item(i,3)->setBackground(QBrush(QColor(255,100,100)));
+
+            ids << _booksModel->item(i,0)->data().toString();
+        }
+    else if (_booksModel->item(i,3)->text() == tr("Returned"))
+        {
+            _booksModel->item(i,0)->setBackground(QBrush(QColor(71,214,97)));
+            _booksModel->item(i,1)->setBackground(QBrush(QColor(71,214,97)));
+            _booksModel->item(i,2)->setBackground(QBrush(QColor(71,214,97)));
+            _booksModel->item(i,3)->setBackground(QBrush(QColor(71,214,97)));
+        }
+    else if (QDate::fromString(_booksModel->item(i,2)->text(), "dd.MM.yyyy") >
+             QDate::currentDate() && _booksModel->item(i,3)->text() != tr("Returned"))
+        {
+            _booksModel->item(i,0)->setBackground(QBrush(Qt::white));
+            _booksModel->item(i,1)->setBackground(QBrush(Qt::white));
+            _booksModel->item(i,2)->setBackground(QBrush(Qt::white));
+            _booksModel->item(i,3)->setBackground(QBrush(Qt::white));
+        }
+
+    for (int i = 0; i < _booksModel->rowCount(); i++)
+        if (_booksModel->item(i,3)->text() == tr("Returned"))
+        {
+
+        }
+
+    for (int i = 0; i < _studentsModel->rowCount(); i++)
+        if (ids.contains(_studentsModel->item(i,0)->data().toString()))
+        {
+            _studentsModel->item(i,0)->setBackground(QBrush(QColor(255,100,100)));
+            _studentsModel->item(i,1)->setBackground(QBrush(QColor(255,100,100)));
+            _studentsModel->item(i,2)->setBackground(QBrush(QColor(255,100,100)));
+        }
+        else
+        {
+            _studentsModel->item(i,0)->setBackground(QBrush(QColor(Qt::white)));
+            _studentsModel->item(i,1)->setBackground(QBrush(QColor(Qt::white)));
+            _studentsModel->item(i,2)->setBackground(QBrush(QColor(Qt::white)));
+        }
 }
 
 void MainWindow::OnStudentModelChanged()
@@ -85,6 +149,35 @@ void MainWindow::OnBookModelChanged()
         _ui->noBooksLabel->show();
         _ui->deleteBookBtn->setEnabled(false);
         _ui->changeBookBtn->setEnabled(false);
+    }
+}
+
+void MainWindow::OnMenuClicked(QAction *action)
+{
+    if(action == _ui->actionExit)
+        QCoreApplication::quit();
+    if(action == _ui->actionAdd_student)
+        on_addBtn_clicked();
+    if(action == _ui->actionGuide)
+    {
+        QMessageBox::about(this, tr("Guide"), tr("If you need details how to work\n"
+                                                 "with program, please contact the developer"));
+    }
+
+    if(action == _ui->actionAuthor)
+    {
+        QMessageBox::about(this, tr("Author"), tr("Develope by Anton Yurchenko\n"
+                                                  "for coursework in 2016 BSUIR"));
+    }
+    if(action == _ui->actionSoftware)
+    {
+        QMessageBox::about(this, tr("Software"), tr("This software was create to\n"
+                                                    "help manage books in\n"
+                                                    "university library"));
+    }
+    if(action == _ui->actionVersion)
+    {
+        QMessageBox::aboutQt(this, tr("Version"));
     }
 }
 
@@ -136,23 +229,29 @@ void MainWindow::on_addBookBtn_clicked()
    {
         _booksModel->AddBook(_studentId, addBookDialog->GetData());
    }
+
+   CheckBooks();
 }
 
 void MainWindow::on_changeBookBtn_clicked()
 {
     QList<QString> list;
-    list << _booksModel->item(_ui->booksTable->currentIndex().row(), 0)->text()
-         << _booksModel->item(_ui->booksTable->currentIndex().row(), 1)->text()
-         << _booksModel->item(_ui->booksTable->currentIndex().row(), 2)->text();
+    list << _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 0)->text()
+         << _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 1)->text()
+         << _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 2)->text()
+         << _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 3)->text();
 
     AddBookDialog *addBookDialog = new AddBookDialog(list, this);
 
    if (addBookDialog->exec() == QDialog::Accepted)
    {
-        _booksModel->item(_ui->booksTable->currentIndex().row(), 0)->setText(addBookDialog->GetData().at(0));
-        _booksModel->item(_ui->booksTable->currentIndex().row(), 1)->setText(addBookDialog->GetData().at(1));
-        _booksModel->item(_ui->booksTable->currentIndex().row(), 2)->setText(addBookDialog->GetData().at(2));
+        _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 0)->setText(addBookDialog->GetData().at(0));
+        _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 1)->setText(addBookDialog->GetData().at(1));
+        _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 2)->setText(addBookDialog->GetData().at(2));
+        _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 3)->setText(addBookDialog->GetData().at(3));
    }
+
+   CheckBooks();
 }
 
 void MainWindow::on_deleteBookBtn_clicked()

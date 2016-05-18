@@ -1,5 +1,4 @@
 #include "BooksModel.h"
-#include <QDebug>
 
 BooksModel::BooksModel(QObject *parent) :
     QStandardItemModel(parent)
@@ -7,6 +6,7 @@ BooksModel::BooksModel(QObject *parent) :
     setHorizontalHeaderItem(0, new QStandardItem(tr("Name")));
     setHorizontalHeaderItem(1, new QStandardItem(tr("Author")));
     setHorizontalHeaderItem(2, new QStandardItem(tr("Date")));
+    setHorizontalHeaderItem(3, new QStandardItem(tr("Status")));
 }
 
 BooksModel::~BooksModel()
@@ -35,14 +35,11 @@ void BooksModel::DeleteBooksByStudentId(const QString id)
         if (item(j, 0)->data().toString() == id)
             count++;
 
-    qDebug() << "count: " << count;
-
     for (int i = 0; i < count; ++i) {
         for(int j = 0; j < rowCount(); j++)
         {
             if (item(j, 0)->data().toString() == id)
             {
-                qDebug() << item(j,0)->text();
                 removeRow(j);
                 break;
             }
@@ -65,8 +62,11 @@ void BooksModel::FillModel(const QString studentId, const QList<QString> &data)
 
     QStandardItem *dateItem = new QStandardItem(data.at(2));
     dateItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
-
     itemsRow << dateItem;
+
+    QStandardItem *returnItem = new QStandardItem(data.at(3));
+    returnItem->setData(Qt::AlignCenter, Qt::TextAlignmentRole);
+    itemsRow << returnItem;
 
     appendRow(itemsRow);
 }

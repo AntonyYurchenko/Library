@@ -5,6 +5,6 @@
         <file>Resources/adduser.png</file>
     </qresource>
     <qresource prefix="/translations">
-        <file>ru.ts</file>
+        <file>ru.qm</file>
     </qresource>
 </RCC>
