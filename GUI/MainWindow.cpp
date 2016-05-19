@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->deleteBtn->setEnabled(false);
     _ui->deleteBookBtn->setEnabled(false);
     _ui->changeBookBtn->setEnabled(false);
+    _ui->actionCancel_last_action->setEnabled(false);
 
     _studentsModel = new StudentsModel(this);
     _ui->studentsTable->setModel(_studentsModel);
@@ -66,7 +67,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::PrepareTable(QTableView *table)
 {
-    table->verticalHeader()->setVisible(table == _ui->booksTable);
+    table->verticalHeader()->setVisible(false);
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
     table->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -104,13 +105,6 @@ void MainWindow::CheckBooks()
             _booksModel->item(i,2)->setBackground(QBrush(Qt::white));
             _booksModel->item(i,3)->setBackground(QBrush(Qt::white));
         }
-
-    for (int i = 0; i < _booksModel->rowCount(); i++)
-        if (_booksModel->item(i,3)->text() == tr("Returned"))
-        {
-
-        }
-
     for (int i = 0; i < _studentsModel->rowCount(); i++)
         if (ids.contains(_studentsModel->item(i,0)->data().toString()))
         {
@@ -179,20 +173,34 @@ void MainWindow::OnMenuClicked(QAction *action)
     {
         QMessageBox::aboutQt(this, tr("Version"));
     }
+    if (action == _ui->actionCancel_last_action)
+    {
+        JsonParser::load("students.txt", _studentsModel);
+        JsonParser::load("books.txt", _booksModel);
+        _ui->actionCancel_last_action->setEnabled(false);
+    }
 }
 
 void MainWindow::on_addBtn_clicked()
 {
+    JsonParser::save("students.txt", _studentsModel);
+    JsonParser::save("books.txt", _booksModel);
+
     AddStudentDialog *addStudentDialog = new AddStudentDialog(this);
 
    if (addStudentDialog->exec() == QDialog::Accepted)
    {
         _studentsModel->AddStudent(addStudentDialog->GetData());
+        _ui->actionCancel_last_action->setEnabled(true);
    }
 }
 
 void MainWindow::on_deleteBtn_clicked()
 {
+    JsonParser::save("students.txt", _studentsModel);
+    JsonParser::save("books.txt", _booksModel);
+    _ui->actionCancel_last_action->setEnabled(true);
+
     _studentsModel->DeleteStudent(_ui->studentsTable->currentIndex().row());
     _booksModel->DeleteBooksByStudentId(_studentId);
 }
@@ -223,11 +231,15 @@ void MainWindow::on_booksTable_clicked(const QModelIndex &index)
 
 void MainWindow::on_addBookBtn_clicked()
 {
+    JsonParser::save("students.txt", _studentsModel);
+    JsonParser::save("books.txt", _booksModel);
+
     AddBookDialog *addBookDialog = new AddBookDialog(this);
 
    if (addBookDialog->exec() == QDialog::Accepted)
    {
         _booksModel->AddBook(_studentId, addBookDialog->GetData());
+        _ui->actionCancel_last_action->setEnabled(true);
    }
 
    CheckBooks();
@@ -235,6 +247,9 @@ void MainWindow::on_addBookBtn_clicked()
 
 void MainWindow::on_changeBookBtn_clicked()
 {
+    JsonParser::save("students.txt", _studentsModel);
+    JsonParser::save("books.txt", _booksModel);
+
     QList<QString> list;
     list << _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 0)->text()
          << _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 1)->text()
@@ -249,6 +264,7 @@ void MainWindow::on_changeBookBtn_clicked()
         _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 1)->setText(addBookDialog->GetData().at(1));
         _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 2)->setText(addBookDialog->GetData().at(2));
         _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 3)->setText(addBookDialog->GetData().at(3));
+        _ui->actionCancel_last_action->setEnabled(true);
    }
 
    CheckBooks();
@@ -256,5 +272,9 @@ void MainWindow::on_changeBookBtn_clicked()
 
 void MainWindow::on_deleteBookBtn_clicked()
 {
+    JsonParser::save("students.txt", _studentsModel);
+    JsonParser::save("books.txt", _booksModel);
+    _ui->actionCancel_last_action->setEnabled(true);
+
     _booksModel->DeleteBook(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row());
 }

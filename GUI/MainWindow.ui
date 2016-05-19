@@ -39,7 +39,11 @@
        </property>
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0" colspan="3">
-         <widget class="QTableView" name="studentsTable"/>
+         <widget class="QTableView" name="studentsTable">
+          <property name="sortingEnabled">
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0">
          <spacer name="horizontalSpacer">
@@ -143,7 +147,11 @@
             </widget>
            </item>
            <item row="0" column="0" colspan="4">
-            <widget class="QTableView" name="booksTable"/>
+            <widget class="QTableView" name="booksTable">
+             <property name="sortingEnabled">
+              <bool>true</bool>
+             </property>
+            </widget>
            </item>
            <item row="1" column="0" colspan="4">
             <widget class="QLabel" name="noBooksLabel">
@@ -210,6 +218,7 @@
     <property name="title">
      <string>Edit</string>
     </property>
+    <addaction name="actionCancel_last_action"/>
     <addaction name="actionAdd_student"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -280,8 +289,22 @@
     <string>Delete student</string>
    </property>
   </action>
+  <action name="actionCancel_last_action">
+   <property name="text">
+    <string>Cancel last action</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>studentsTable</tabstop>
+  <tabstop>addBtn</tabstop>
+  <tabstop>deleteBtn</tabstop>
+  <tabstop>booksTable</tabstop>
+  <tabstop>addBookBtn</tabstop>
+  <tabstop>changeBookBtn</tabstop>
+  <tabstop>deleteBookBtn</tabstop>
+ </tabstops>
  <resources>
   <include location="../Resource.qrc"/>
  </resources>

@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QTranslator>
+#include <QFile>
+#include <QTextStream>
 
 int main(int argc, char *argv[])
 {

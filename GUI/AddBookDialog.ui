@@ -137,6 +137,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>nameEdit</tabstop>
+  <tabstop>authorEdit</tabstop>
+  <tabstop>dateEdit</tabstop>
+  <tabstop>returnBox</tabstop>
+  <tabstop>calendarWidget</tabstop>
+ </tabstops>
  <resources>
   <include location="../Resource.qrc"/>
  </resources>
