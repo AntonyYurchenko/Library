@@ -1,12 +1,14 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include <QDate>
 #include <QMessageBox>
 
 #include "AddStudentDialog.h"
 #include "AddBookDialog.h"
 #include "JsonParser.h"
-#include <QDate>
+
+#include <QtPrintSupport/QPrinter>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     _ui->deleteBtn->setEnabled(false);
     _ui->deleteBookBtn->setEnabled(false);
     _ui->changeBookBtn->setEnabled(false);
+    _ui->printBtn->setEnabled(false);
+    _ui->actionPrint->setEnabled(false);
     _ui->actionCancel_last_action->setEnabled(false);
 
     _studentsModel = new StudentsModel(this);
@@ -41,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     PrepareTable(_ui->booksTable);
 
+    _report = new ReportGenerator();
+    _printPreview = new QPrintPreviewDialog(this);
+
     connect(_studentsModel, SIGNAL(ModelChanged()),
             this, SLOT(OnStudentModelChanged()));
 
@@ -51,10 +58,11 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(OnMenuClicked(QAction*)));
     connect(_ui->menuEdit, SIGNAL(triggered(QAction*)),
             this, SLOT(OnMenuClicked(QAction*)));
-    connect(_ui->menuHelp, SIGNAL(triggered(QAction*)),
-            this, SLOT(OnMenuClicked(QAction*)));
     connect(_ui->menuAbout, SIGNAL(triggered(QAction*)),
             this, SLOT(OnMenuClicked(QAction*)));
+
+    connect(_printPreview, SIGNAL(paintRequested(QPrinter*)),
+            this, SLOT(OnPaintRequested(QPrinter*)));
 }
 
 MainWindow::~MainWindow()
@@ -90,15 +98,15 @@ void MainWindow::CheckBooks()
 
             ids << _booksModel->item(i,0)->data().toString();
         }
-    else if (_booksModel->item(i,3)->text() == tr("Returned"))
+        else if (_booksModel->item(i,3)->text() == tr("Returned"))
         {
             _booksModel->item(i,0)->setBackground(QBrush(QColor(71,214,97)));
             _booksModel->item(i,1)->setBackground(QBrush(QColor(71,214,97)));
             _booksModel->item(i,2)->setBackground(QBrush(QColor(71,214,97)));
             _booksModel->item(i,3)->setBackground(QBrush(QColor(71,214,97)));
         }
-    else if (QDate::fromString(_booksModel->item(i,2)->text(), "dd.MM.yyyy") >
-             QDate::currentDate() && _booksModel->item(i,3)->text() != tr("Returned"))
+        else if (QDate::fromString(_booksModel->item(i,2)->text(), "dd.MM.yyyy") >
+                 QDate::currentDate() && _booksModel->item(i,3)->text() != tr("Returned"))
         {
             _booksModel->item(i,0)->setBackground(QBrush(Qt::white));
             _booksModel->item(i,1)->setBackground(QBrush(Qt::white));
@@ -138,11 +146,15 @@ void MainWindow::OnBookModelChanged()
     if (_proxyModel->rowCount() != 0) {
         _ui->booksTable->show();
         _ui->noBooksLabel->hide();
+        _ui->printBtn->setEnabled(true);
+        _ui->actionPrint->setEnabled(true);
     } else {
         _ui->booksTable->hide();
         _ui->noBooksLabel->show();
         _ui->deleteBookBtn->setEnabled(false);
         _ui->changeBookBtn->setEnabled(false);
+        _ui->printBtn->setEnabled(false);
+        _ui->actionPrint->setEnabled(false);
     }
 }
 
@@ -152,15 +164,11 @@ void MainWindow::OnMenuClicked(QAction *action)
         QCoreApplication::quit();
     if(action == _ui->actionAdd_student)
         on_addBtn_clicked();
-    if(action == _ui->actionGuide)
+    if(action == _ui->actionPrint)
+        on_printBtn_clicked();
+    if(action == _ui->actionDeveloper)
     {
-        QMessageBox::about(this, tr("Guide"), tr("If you need details how to work\n"
-                                                 "with program, please contact the developer"));
-    }
-
-    if(action == _ui->actionAuthor)
-    {
-        QMessageBox::about(this, tr("Author"), tr("Develope by Anton Yurchenko\n"
+        QMessageBox::about(this, tr("Developer"), tr("Develope by Anton Yurchenko\n"
                                                   "for coursework in 2016 BSUIR"));
     }
     if(action == _ui->actionSoftware)
@@ -169,16 +177,21 @@ void MainWindow::OnMenuClicked(QAction *action)
                                                     "help manage books in\n"
                                                     "university library"));
     }
-    if(action == _ui->actionVersion)
-    {
-        QMessageBox::aboutQt(this, tr("Version"));
-    }
     if (action == _ui->actionCancel_last_action)
     {
         JsonParser::load("students.txt", _studentsModel);
         JsonParser::load("books.txt", _booksModel);
+
         _ui->actionCancel_last_action->setEnabled(false);
+
+        CheckBooks();
     }
+}
+
+void MainWindow::OnPaintRequested(QPrinter *printer)
+{
+    QTextDocument *doc = _report->Generate();
+    doc->print(printer);
 }
 
 void MainWindow::on_addBtn_clicked()
@@ -188,11 +201,11 @@ void MainWindow::on_addBtn_clicked()
 
     AddStudentDialog *addStudentDialog = new AddStudentDialog(this);
 
-   if (addStudentDialog->exec() == QDialog::Accepted)
-   {
+    if (addStudentDialog->exec() == QDialog::Accepted)
+    {
         _studentsModel->AddStudent(addStudentDialog->GetData());
         _ui->actionCancel_last_action->setEnabled(true);
-   }
+    }
 }
 
 void MainWindow::on_deleteBtn_clicked()
@@ -236,13 +249,13 @@ void MainWindow::on_addBookBtn_clicked()
 
     AddBookDialog *addBookDialog = new AddBookDialog(this);
 
-   if (addBookDialog->exec() == QDialog::Accepted)
-   {
+    if (addBookDialog->exec() == QDialog::Accepted)
+    {
         _booksModel->AddBook(_studentId, addBookDialog->GetData());
         _ui->actionCancel_last_action->setEnabled(true);
-   }
+    }
 
-   CheckBooks();
+    CheckBooks();
 }
 
 void MainWindow::on_changeBookBtn_clicked()
@@ -258,16 +271,16 @@ void MainWindow::on_changeBookBtn_clicked()
 
     AddBookDialog *addBookDialog = new AddBookDialog(list, this);
 
-   if (addBookDialog->exec() == QDialog::Accepted)
-   {
+    if (addBookDialog->exec() == QDialog::Accepted)
+    {
         _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 0)->setText(addBookDialog->GetData().at(0));
         _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 1)->setText(addBookDialog->GetData().at(1));
         _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 2)->setText(addBookDialog->GetData().at(2));
         _booksModel->item(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row(), 3)->setText(addBookDialog->GetData().at(3));
         _ui->actionCancel_last_action->setEnabled(true);
-   }
+    }
 
-   CheckBooks();
+    CheckBooks();
 }
 
 void MainWindow::on_deleteBookBtn_clicked()
@@ -277,4 +290,18 @@ void MainWindow::on_deleteBookBtn_clicked()
     _ui->actionCancel_last_action->setEnabled(true);
 
     _booksModel->DeleteBook(_proxyModel->mapToSource(_ui->booksTable->currentIndex()).row());
+}
+
+void MainWindow::on_printBtn_clicked()
+{
+    _report->SetReportName(tr("Books student ")  + _studentsModel->item(_ui->studentsTable->currentIndex().row(), 0)->text());
+
+    _report->AddText(tr("Group: ") + _studentsModel->item(_ui->studentsTable->currentIndex().row(), 2)->text() + "\n" +
+                     tr("Department: ") + _studentsModel->item(_ui->studentsTable->currentIndex().row(), 1)->text(), QFont(), Qt::AlignLeft);
+
+    _report->AddTable(_ui->booksTable->model(),
+                      _ui->booksTable->horizontalHeader(),
+                      _ui->booksTable->horizontalHeader());
+
+    _printPreview->exec();
 }

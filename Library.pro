@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui printsupport
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -14,9 +14,11 @@ TARGET = Library
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    JsonParser.cpp
+    JsonParser.cpp \
+    ReportGenerator.cpp
 
-HEADERS  +=
+HEADERS  += \
+    ReportGenerator.h
     JsonParser.h
 
 include(BLL/BLL.pri)

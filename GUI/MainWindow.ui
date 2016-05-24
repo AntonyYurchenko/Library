@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>518</height>
+    <width>1048</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,6 +33,19 @@
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QGroupBox {
+    border: 1px solid gray;
+
+    margin-top: 0.5em;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 3px 0 3px;
+}</string>
        </property>
        <property name="title">
         <string>Students</string>
@@ -60,6 +73,12 @@
         </item>
         <item row="1" column="1">
          <widget class="QPushButton" name="addBtn">
+          <property name="maximumSize">
+           <size>
+            <width>75</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Add</string>
           </property>
@@ -67,6 +86,12 @@
         </item>
         <item row="1" column="2">
          <widget class="QPushButton" name="deleteBtn">
+          <property name="maximumSize">
+           <size>
+            <width>75</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>Delete</string>
           </property>
@@ -108,11 +133,36 @@
             <verstretch>0</verstretch>
            </sizepolicy>
           </property>
+          <property name="styleSheet">
+           <string notr="true">QGroupBox {
+    border: 1px solid gray;
+    margin-top: 0.5em;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 3px 0 3px;
+}</string>
+          </property>
           <property name="title">
            <string>Books</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="2" column="0">
+           <item row="2" column="2">
+            <widget class="QPushButton" name="addBookBtn">
+             <property name="maximumSize">
+              <size>
+               <width>75</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Add</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
             <spacer name="horizontalSpacer_2">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -125,35 +175,53 @@
              </property>
             </spacer>
            </item>
-           <item row="2" column="2">
-            <widget class="QPushButton" name="changeBookBtn">
-             <property name="text">
-              <string>Change</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QPushButton" name="addBookBtn">
-             <property name="text">
-              <string>Add</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="3">
+           <item row="2" column="4">
             <widget class="QPushButton" name="deleteBookBtn">
+             <property name="maximumSize">
+              <size>
+               <width>75</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>Delete</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="0" colspan="4">
+           <item row="2" column="3">
+            <widget class="QPushButton" name="changeBookBtn">
+             <property name="maximumSize">
+              <size>
+               <width>75</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Change</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QPushButton" name="printBtn">
+             <property name="maximumSize">
+              <size>
+               <width>75</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>Print</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="5">
             <widget class="QTableView" name="booksTable">
              <property name="sortingEnabled">
               <bool>true</bool>
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="4">
+           <item row="1" column="0" colspan="5">
             <widget class="QLabel" name="noBooksLabel">
              <property name="text">
               <string>No books for this student</string>
@@ -201,7 +269,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1000</width>
+     <width>1048</width>
      <height>22</height>
     </rect>
    </property>
@@ -212,6 +280,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionPrint"/>
+    <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
@@ -221,32 +291,16 @@
     <addaction name="actionCancel_last_action"/>
     <addaction name="actionAdd_student"/>
    </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>Help</string>
-    </property>
-    <addaction name="actionGuide"/>
-   </widget>
    <widget class="QMenu" name="menuAbout">
     <property name="title">
      <string>About</string>
     </property>
-    <addaction name="actionAuthor"/>
+    <addaction name="actionDeveloper"/>
     <addaction name="actionSoftware"/>
-    <addaction name="actionVersion"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
-   <addaction name="menuHelp"/>
    <addaction name="menuAbout"/>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionExit">
@@ -254,9 +308,9 @@
     <string>Exit</string>
    </property>
   </action>
-  <action name="actionAuthor">
+  <action name="actionDeveloper">
    <property name="text">
-    <string>Author</string>
+    <string>Developer</string>
    </property>
   </action>
   <action name="actionSoftware">
@@ -264,34 +318,19 @@
     <string>Software</string>
    </property>
   </action>
-  <action name="actionVersion">
-   <property name="text">
-    <string>Version</string>
-   </property>
-  </action>
-  <action name="actionGuide">
-   <property name="text">
-    <string>Guide</string>
-   </property>
-  </action>
   <action name="actionAdd_student">
    <property name="text">
     <string>Add student</string>
    </property>
   </action>
-  <action name="actionChange_student_data">
-   <property name="text">
-    <string>Change student data</string>
-   </property>
-  </action>
-  <action name="actionDelete_student">
-   <property name="text">
-    <string>Delete student</string>
-   </property>
-  </action>
   <action name="actionCancel_last_action">
    <property name="text">
     <string>Cancel last action</string>
+   </property>
+  </action>
+  <action name="actionPrint">
+   <property name="text">
+    <string>Print</string>
    </property>
   </action>
  </widget>

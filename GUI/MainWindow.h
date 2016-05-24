@@ -7,6 +7,8 @@
 #include "StudentsModel.h"
 #include "BooksModel.h"
 #include "ProxyModel.h"
+#include "ReportGenerator.h"
+#include "QtPrintSupport/QPrintPreviewDialog"
 
 namespace Ui {
     class MainWindow;
@@ -34,10 +36,12 @@ private slots:
     void on_addBookBtn_clicked();
     void on_changeBookBtn_clicked();
     void on_deleteBookBtn_clicked();
+    void on_printBtn_clicked();
 
     void OnStudentModelChanged();
     void OnBookModelChanged();
     void OnMenuClicked(QAction*action);
+    void OnPaintRequested(QPrinter* printer);
 
 private:
     Ui::MainWindow *_ui;
@@ -48,6 +52,9 @@ private:
 
     StudentsModel *_studentsModel;
     BooksModel *_booksModel;
+
+    ReportGenerator *_report;
+    QPrintPreviewDialog *_printPreview;
 };
 
 #endif // MAINWINDOW_H
