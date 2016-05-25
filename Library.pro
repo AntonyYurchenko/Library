@@ -18,7 +18,7 @@ SOURCES += main.cpp\
     ReportGenerator.cpp
 
 HEADERS  += \
-    ReportGenerator.h
+    ReportGenerator.h \
     JsonParser.h
 
 include(BLL/BLL.pri)

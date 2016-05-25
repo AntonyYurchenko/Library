@@ -128,6 +128,7 @@
     <message>
         <location filename="GUI/MainWindow.ui" line="213"/>
         <location filename="GUI/MainWindow.ui" line="333"/>
+        <location filename="GUI/MainWindow.cpp" line="50"/>
         <source>Print</source>
         <translation>Печать</translation>
     </message>
@@ -163,13 +164,13 @@
     </message>
     <message>
         <location filename="GUI/MainWindow.ui" line="313"/>
-        <location filename="GUI/MainWindow.cpp" line="171"/>
+        <location filename="GUI/MainWindow.cpp" line="172"/>
         <source>Developer</source>
         <translation>Разработчик</translation>
     </message>
     <message>
         <location filename="GUI/MainWindow.ui" line="318"/>
-        <location filename="GUI/MainWindow.cpp" line="176"/>
+        <location filename="GUI/MainWindow.cpp" line="177"/>
         <source>Software</source>
         <translation>Программа</translation>
     </message>
@@ -184,21 +185,21 @@
         <translation>Возврат</translation>
     </message>
     <message>
-        <location filename="GUI/MainWindow.cpp" line="92"/>
-        <location filename="GUI/MainWindow.cpp" line="101"/>
-        <location filename="GUI/MainWindow.cpp" line="109"/>
+        <location filename="GUI/MainWindow.cpp" line="93"/>
+        <location filename="GUI/MainWindow.cpp" line="102"/>
+        <location filename="GUI/MainWindow.cpp" line="110"/>
         <source>Returned</source>
         <translation>Возвращена</translation>
     </message>
     <message>
-        <location filename="GUI/MainWindow.cpp" line="171"/>
+        <location filename="GUI/MainWindow.cpp" line="172"/>
         <source>Develope by Anton Yurchenko
 for coursework in 2016 BSUIR</source>
         <translation>ПО разработал Юрченко Антон Николаевич
 для курсовой работы 2016 БГУИР</translation>
     </message>
     <message>
-        <location filename="GUI/MainWindow.cpp" line="176"/>
+        <location filename="GUI/MainWindow.cpp" line="177"/>
         <source>This software was create to
 help manage books in
 university library</source>
@@ -207,17 +208,17 @@ university library</source>
 управления книгами в университетской библиотеке</translation>
     </message>
     <message>
-        <location filename="GUI/MainWindow.cpp" line="294"/>
+        <location filename="GUI/MainWindow.cpp" line="298"/>
         <source>Books student </source>
         <translation>Список книг студента - </translation>
     </message>
     <message>
-        <location filename="GUI/MainWindow.cpp" line="296"/>
+        <location filename="GUI/MainWindow.cpp" line="300"/>
         <source>Group: </source>
         <translation>Группа:</translation>
     </message>
     <message>
-        <location filename="GUI/MainWindow.cpp" line="297"/>
+        <location filename="GUI/MainWindow.cpp" line="301"/>
         <source>Department: </source>
         <translation>Факультет:</translation>
     </message>

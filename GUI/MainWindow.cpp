@@ -47,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     _report = new ReportGenerator();
     _printPreview = new QPrintPreviewDialog(this);
+    _printPreview->setWindowTitle(tr("Print"));
 
     connect(_studentsModel, SIGNAL(ModelChanged()),
             this, SLOT(OnStudentModelChanged()));
