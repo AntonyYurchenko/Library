@@ -41,12 +41,22 @@
          <minute>0</minute>
          <second>0</second>
          <year>2000</year>
-         <month>1</month>
+         <month>2</month>
          <day>1</day>
         </datetime>
        </property>
        <property name="displayFormat">
         <string>dd.MM.yyyy</string>
+       </property>
+       <property name="timeSpec">
+        <enum>Qt::LocalTime</enum>
+       </property>
+       <property name="date">
+        <date>
+         <year>2000</year>
+         <month>2</month>
+         <day>1</day>
+        </date>
        </property>
       </widget>
      </item>

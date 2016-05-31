@@ -18,6 +18,7 @@ AddBookDialog::AddBookDialog(QList<QString> list, QWidget *parent) :
 
     _ui->nameEdit->setText(list.at(0));
     _ui->authorEdit->setText(list.at(1));
+    _ui->dateEdit->setDisplayFormat("dd.MM.yyyy");
     _ui->dateEdit->setDate(QDate::fromString(list.at(2), "dd.MM.yyyy"));
 
     if (list.at(3) == tr("Returned"))
@@ -36,7 +37,7 @@ QList<QString> AddBookDialog::GetData()
     QList<QString> list;
     list << _ui->nameEdit->text()
          << _ui->authorEdit->text()
-         << _ui->dateEdit->text();
+         << _ui->dateEdit->date().toString("dd.MM.yyyy");
 
     if (_ui->returnBox->isChecked())
         list << tr("Returned");
@@ -52,6 +53,7 @@ void AddBookDialog::Init()
     _ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     _ui->dateEdit->setDate(QDate::currentDate());
+    _ui->dateEdit->setDisplayFormat("dd.MM.yyyy");
 //    _ui->dateEdit->setMinimumDate(QDate::currentDate());
 
     connect(_ui->nameEdit, SIGNAL(textChanged(QString)),
